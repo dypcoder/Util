@@ -1,0 +1,68 @@
+String path = "/page/index/index";
+        Integer width = null;
+        Boolean autoColor = null;
+        JSONObject lineColor = null;
+        String url = "xxxxxx";
+
+        String entityStr = null;
+        CloseableHttpResponse response = null;
+
+        CloseableHttpClient httpClient = HttpClients.createDefault();
+        HttpPost httpPost = new HttpPost(url);
+        // 创建请求参数 form表单形式  begin...
+        /*List<NameValuePair> list = new LinkedList<>();
+        BasicNameValuePair param1 = new BasicNameValuePair("path", path);
+        if (null != width) {
+            BasicNameValuePair param2 = new BasicNameValuePair("width", width.toString());
+            list.add(param2);
+        }
+        if (null != autoColor) {
+            BasicNameValuePair param3 = new BasicNameValuePair("auto_color", autoColor.toString());
+            list.add(param3);
+        }
+        if (null != width) {
+            BasicNameValuePair param4 = new BasicNameValuePair("line_cplor", lineColor.toJSONString());
+            list.add(param4);
+        }
+        list.add(param1);*/
+        // 创建请求参数 form表单形式  begin...
+        // 使用URL实体转换工具
+        try {
+            //发送JSON数据  begin...
+            JSONObject jo = new JSONObject();
+            jo.put("path","/page/index/index");
+            StringEntity se = new StringEntity(jo.toJSONString());
+            httpPost.setEntity(se);
+            //发送JSON数据  end...
+            /*
+             * 添加请求头信息
+             */
+            // 传输的类型
+            httpPost.addHeader("Content-Type", "application/json");
+            response = httpClient.execute(httpPost);
+            // 获得响应的实体对象
+            HttpEntity entity = response.getEntity();
+            // 使用Apache提供的工具类进行转换成字符串
+            entityStr = EntityUtils.toString(entity, "UTF-8");
+
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        } catch (ClientProtocolException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            // 释放连接
+            if (null != response) {
+                try {
+                    response.close();
+                    httpClient.close();
+                } catch (IOException e) {
+                    System.err.println("释放连接出错");
+                    e.printStackTrace();
+                }
+            }
+        }
+        // 打印响应内容
+        System.out.println(entityStr);
+    }
